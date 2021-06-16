@@ -1,0 +1,37 @@
+digraph diagram_1 { 
+	graph [fontsize=10 fontname="Verdana" compound=true];
+	node [shape=record fontsize=10 fontname="Verdana"];
+    color=white;
+
+    subgraph cluster_disjunction{
+	    node [shape=record,style=filled];color=lightgrey;
+	    style=filled;
+	    color=lightgrey;
+	
+        subgraph cluster_ {
+            node[shape=record, width=0.5, style=filled, fillcolor=white];
+            color=white;
+            node_1 [label="node1"];
+        }
+        subgraph cluster_ {
+            node[shape=record, width=0.5, style=filled, fillcolor=white];
+            color=white;node2[label="node2"];
+        }
+        subgraph cluster_conjunction{
+            node [shape=record,style=filled];color=white;
+            style=filled;
+            color=white;
+
+            subgraph cluster_3 {
+                node[shape=record, width=0.5, style=filled, fillcolor=white];
+                color=white;
+                node3[label="node3"];
+            }
+            subgraph cluster_4 {
+                node[shape=record, width=0.5, style=filled, fillcolor=lightgrey];
+                color=white;
+                node4[label="node4"];
+            }
+        }
+    }
+}

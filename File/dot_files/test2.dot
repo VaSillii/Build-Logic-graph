@@ -1,0 +1,35 @@
+digraph G {
+    graph [fontsize=10 fontname="Verdana" compound=true];
+    node [shape=record fontsize=10 fontname="Verdana"];
+    color=white;
+    subgraph cluster_SubClassOf {
+
+    subgraph cluster_node_1 {
+            node[shape=record, width=0.5, style=filled, fillcolor=white, color=black];
+            color=white;
+            "Жанр";
+        }
+
+    subgraph cluster_conjunction {
+        node [shape=record,style=filled];
+        color=black;
+
+        subgraph cluster_node {
+            node[shape=record, width=0.5, style=filled, fillcolor=white, color=black];
+            color=white;
+            Боевик;
+        }
+        subgraph cluster_node {
+            node[shape=record, width=0.5, style=filled, fillcolor=lightgrey, color=black];
+            color=white;
+            Фентэзи;
+        }
+    }
+    // Edges that directly connect one cluster to another
+    "Жанр" -> "Боевик" [ltail=cluster_0 lhead=cluster_conjunction label="SubClassOf"];
+
+    //"Item 1" -> "Item 5" [ltail=cluster_0 lhead=cluster_conjunction] [label="SubClassOf"];
+}
+}
+
+

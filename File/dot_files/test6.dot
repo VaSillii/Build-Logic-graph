@@ -1,0 +1,52 @@
+digraph diagram_1 {
+	graph [fontsize=10 fontname="Verdana" compound=true];
+	node [shape=record fontsize=10 fontname="Verdana"];
+    color=white;
+
+        subgraph cluster_conjunction {
+            node [shape=record,style=filled, fillcolor=white];
+            color=black;
+
+        subgraph cluster_5 {
+            node[shape=record, width=0.5, style=filled, fillcolor=lightgrey];
+            color=white;
+            node_5 [label=""];
+        }
+        subgraph cluster_6 {
+            node[shape=record, width=0.5, style=filled, fillcolor=lightgrey];
+            color=white;
+            node_6 [label="Professor"];
+        }
+
+        node_5 -> node_6 [label="hasChild"];
+
+
+        subgraph cluster_4 {
+            node[shape=record, width=0.5, style=filled];
+            color=white;
+            node_4 [label=""];
+        }
+
+        subgraph cluster_3 {
+            node[shape=record, width=0.5, style=filled];
+            color=white;
+            node_3 [label="Doctor"];
+        }
+
+        node_4 -> node_3 [label="marriedTo"];
+
+
+        subgraph cluster_2 {
+            node[shape=record, width=0.5, style=filled, fillcolor=lightgrey];
+            color=white;
+            node_2 [label="Female"];
+        }
+
+        subgraph cluster_1 {
+            node[shape=record, width=0.5, style=filled];
+            color=white;
+            node_1 [label="Human"];
+        }
+    }
+
+}

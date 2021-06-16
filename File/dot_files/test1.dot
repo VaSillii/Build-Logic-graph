@@ -1,0 +1,41 @@
+
+digraph G {
+    graph [fontsize=10 fontname="Verdana" compound=true];
+    node [shape=record fontsize=10 fontname="Verdana"];
+    color=white;
+    subgraph cluster_SubClassOf {
+    //color=white;
+    subgraph cluster_0 {
+        node [style=filled];
+        "Item 1" "Item 2";
+        color=black;
+    }
+
+
+    subgraph cluster_1 {
+        node [style=filled];
+        "Item 3" "Item 4";
+        color=black;
+    }
+
+    subgraph cluster_conjunction {
+        node [shape=record,style=filled];
+        color=black;
+
+        subgraph cluster_node {
+            node[shape=record, width=0.5, style=filled, fillcolor=white];
+            color=black;
+            node3;
+        }
+        subgraph cluster_node {
+            node[shape=record, width=0.5, style=filled, fillcolor=lightgrey];
+            color=black;
+            "node4";
+        }
+    }
+    // Edges that directly connect one cluster to another
+    "Item 1" -> "node4" [ltail=cluster_0 lhead=cluster_conjunction label="SubClassOf"];
+    "node4  ";
+    //"Item 1" -> "Item 5" [ltail=cluster_0 lhead=cluster_conjunction] [label="SubClassOf"];
+}
+}
