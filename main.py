@@ -1,12 +1,14 @@
-from parse_owl import *
+from pathlib import Path
+from HelperClass.parse_onto import ParseOntology
+from HelperClass.build_graph import BuildGraph
+from configuration import get_path_graphviz
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    get_path_graphviz()
+    # path = Path(__file__).absolute().parent.joinpath(r'File\family.owl')
+    path = Path(__file__).absolute().parent.joinpath(r'File\ontology family_1.owl')
+    parse_onto = ParseOntology(path)
+    parse_onto.parse()
+    data = parse_onto.class_onto
+    BuildGraph(data).create_graph()
+    # print(data.class_onto[0].equivalent_class[0].elements[0].name)

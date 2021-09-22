@@ -1,0 +1,254 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/nnt/ontologies/2021/6/untitled-ontology-33#"
+     xml:base="http://www.semanticweb.org/nnt/ontologies/2021/6/untitled-ontology-33"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:family="http://www.semanticweb.org/nnt/ontologies/2021/6/family#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family">
+        <rdfs:comment xml:lang="en">This is an ontology about family relationships</rdfs:comment>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#haschild -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#haschild"/>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#test_prop -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test_prop">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test_1"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#Father -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Father">
+        <owl:equivalentClass rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test"/>
+        <owl:equivalentClass rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test_1"/>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Man"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#haschild"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Man"/>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Parent"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#Father_of_only_sons -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Father_of_only_sons">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Father"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Mother"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#haschild"/>
+                        <owl:allValuesFrom rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Man"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Father"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#Man -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Man">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+                    <owl:Class>
+                        <owl:complementOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Woman"/>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test_prop"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Man"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#Mother -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Mother">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Woman"/>
+                    <owl:Class>
+                        <owl:complementOf>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Man"/>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#haschild"/>
+                                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test_prop"/>
+                                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:complementOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Parent"/>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Woman"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#Mother_of_only_daughters -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Mother_of_only_daughters">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Mother"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#haschild"/>
+                        <owl:allValuesFrom rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Woman"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Mother"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#Parent -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Parent">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Father"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Mother"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#Woman -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Woman">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+                    <owl:Class>
+                        <owl:complementOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Man"/>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#test -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test"/>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#test_1 -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test_1"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#alex -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#alex">
+        <rdf:type rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Father"/>
+        <family:haschild rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#ana"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#ana -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#ana">
+        <rdf:type rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Woman"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
+
