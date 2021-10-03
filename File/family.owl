@@ -211,7 +211,9 @@
 
     <!-- http://www.semanticweb.org/nnt/ontologies/2021/6/family#test -->
 
-    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test"/>
+    <owl:Class rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test_1"/>
+    </owl:Class>
     
 
 

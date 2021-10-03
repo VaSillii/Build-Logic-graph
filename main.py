@@ -5,8 +5,8 @@ from configuration import get_path_graphviz
 
 if __name__ == '__main__':
     get_path_graphviz()
-    # path = Path(__file__).absolute().parent.joinpath(r'File\family.owl')
-    path = Path(__file__).absolute().parent.joinpath(r'File\ontology family_1.owl')
+    path = Path(__file__).absolute().parent.joinpath(r'File\family.owl')
+    # path = Path(__file__).absolute().parent.joinpath(r'File\ontology family_1.owl')
     parse_onto = ParseOntology(path)
     parse_onto.parse()
     data = parse_onto.class_onto
