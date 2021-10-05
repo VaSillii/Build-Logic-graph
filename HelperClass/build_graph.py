@@ -60,7 +60,6 @@ class BuildGraph:
             return 'lightgrey'
         else:
             return 'white'
-        # return background
 
     @staticmethod
     def get_node_graph(node: Node, border_color='black', background='white', flag_negation=False):
@@ -91,10 +90,10 @@ class BuildGraph:
         arrow_initial_graph = ''
         if element.flag_nested:
             if flag_change_color:
-                first_node = Node(name=element.first_el)
+                first_node = Node(name=element.first_el, flag_negation=flag_negation)
                 second_node = Node(name=element.second_el)
             else:
-                first_node = Node(name=element.first_el, flag_negation=True)
+                first_node = Node(name=element.first_el, flag_negation=not flag_negation)
                 second_node = Node(name=element.second_el, flag_negation=True)
             inner_elm, graph = BuildGraph.get_graph_element(first_node)
             arrow_initial_graph += inner_elm
@@ -135,7 +134,7 @@ class BuildGraph:
         elif type_element is Intersection:
             return BuildGraph.get_intersection_graph(element, flag_negation=flag_negation)
         elif type_element is Union:
-            return BuildGraph.get_intersection_graph(element, background='lightgrey', flag_negation=flag_negation)
+            return BuildGraph.get_intersection_graph(element, background='lightgrey', flag_negation=not flag_negation)
         else:
             return '', ''
 

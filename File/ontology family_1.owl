@@ -145,6 +145,10 @@
                 <owl:unionOf rdf:parseType="Collection">
                     <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Father"/>
                     <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Mother"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#haschild"/>
+                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+                    </owl:Restriction>
                 </owl:unionOf>
             </owl:Class>
         </owl:equivalentClass>
