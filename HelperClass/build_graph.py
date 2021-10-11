@@ -55,8 +55,8 @@ class BuildGraph:
         return intersection_graph
 
     @staticmethod
-    def inverse_color(background1):
-        if background1.lower() == 'white':
+    def inverse_color(background):
+        if background.lower() == 'white':
             return 'lightgrey'
         else:
             return 'white'
@@ -105,17 +105,24 @@ class BuildGraph:
         return arrow_initial_graph, arrow_graph
 
     @staticmethod
-    def get_intersection_graph(elements, border_color='black', background='white', flag_negation=False):
+    def get_intersection_graph(elements, border_color='black', background='white', flag_negation=False, flag_union=False):
         intersection_graph = ''
         intersection_initial_graph = ''
 
+        flag = not flag_union and flag_negation
         for element in elements.elements:
-            inner_elm, graph = BuildGraph.get_graph_element(element, flag_negation=flag_negation)
+            if flag:
+                inner_elm, graph = BuildGraph.get_graph_element(element, flag_negation=not flag)
+            else:
+                inner_elm, graph = BuildGraph.get_graph_element(element, flag_negation=flag_negation)
 
             intersection_graph += graph
             intersection_initial_graph += inner_elm
+        background_new = background
+        if flag:
+            background_new = BuildGraph.inverse_color(background)
         intersection_graph = BuildGraph.get_nested_graph(intersection_graph, elements.node, border_color=border_color,
-                                                         background=background)
+                                                         background=background_new)
         return intersection_initial_graph, intersection_graph
 
     @staticmethod
@@ -134,7 +141,7 @@ class BuildGraph:
         elif type_element is Intersection:
             return BuildGraph.get_intersection_graph(element, flag_negation=flag_negation)
         elif type_element is Union:
-            return BuildGraph.get_intersection_graph(element, background='lightgrey', flag_negation=not flag_negation)
+            return BuildGraph.get_intersection_graph(element, background='lightgrey', flag_negation=not flag_negation, flag_union=True)
         else:
             return '', ''
 
