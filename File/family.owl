@@ -129,10 +129,14 @@
                             <owl:Class>
                                 <owl:intersectionOf rdf:parseType="Collection">
                                     <rdf:Description rdf:about="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Man"/>
-                                    <owl:Restriction>
-                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#haschild"/>
-                                        <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
-                                    </owl:Restriction>
+                                    <owl:Class>
+                                        <owl:complementOf>
+                                            <owl:Restriction>
+                                                <owl:onProperty rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#haschild"/>
+                                                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
+                                            </owl:Restriction>
+                                        </owl:complementOf>
+                                    </owl:Class>
                                     <owl:Restriction>
                                         <owl:onProperty rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#test_prop"/>
                                         <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/nnt/ontologies/2021/6/family#Person"/>
