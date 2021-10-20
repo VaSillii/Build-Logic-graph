@@ -2,7 +2,7 @@ import re
 from pathlib import Path
 
 from HelperClass.logic_operation import EquivalentClass, Intersection, Node, Negation, \
-    UniversalRestriction, ExistentionRestriction, Union
+    UniversalRestriction, ExistentionRestriction, Union, SubclassOf
 from HelperClass.operationClass import OperationClass
 
 
@@ -10,6 +10,13 @@ class ParseOntology(object):
     def __init__(self, path_file: Path):
         self.class_onto = []
         self.path = path_file
+        self.name_onto = ParseOntology.get_name_onto(self.path)
+
+    @staticmethod
+    def get_name_onto(path):
+        path_str = str(path).replace('/', '\\')
+        path_list = path_str.split('\\')
+        return path_list[-1].split('.owl')[0]
 
     def check_exist_class(self, operation: OperationClass) -> bool:
         """
@@ -38,7 +45,7 @@ class ParseOntology(object):
         :param operation: Operation
         :return: Data attribute
         """
-        about = re.search(f':{name_attr}=\"[\w:\/\.#]+\"', operation)
+        about = re.search(f':{name_attr}=\"[\w:\-\/\.#]+\"', operation)
         if about:
             about = re.findall("\"(.*?)\"", about.group(0))[0]
         return about
@@ -52,18 +59,38 @@ class ParseOntology(object):
 
     @staticmethod
     def _parse_restriction(op_list):
-        if len(op_list) > 2 or len(op_list) == 0:
-            return None
         first_op = ParseOntology.get_operation(op_list[0])
         first_res = ParseOntology._get_name_element_from_url(ParseOntology._get_attribute_info('resource', op_list[0]))
-
         second_op = ParseOntology.get_operation(op_list[1])
-        second_res = ParseOntology._get_name_element_from_url(ParseOntology._get_attribute_info('resource', op_list[1]))
-
+        some_element = op_list[1:]
         if second_op == 'someValuesFrom':
-            return UniversalRestriction('', second_res, first_res)
-        if second_op == 'allValuesFrom':
-            return ExistentionRestriction('', second_res, first_res)
+            universal_restriction = UniversalRestriction()
+            universal_restriction.first_el.append(Node(name=''))
+            if len(some_element) == 1 and some_element[0][-2] == '/':
+                second_res = ParseOntology._get_name_element_from_url(ParseOntology._get_attribute_info('resource', op_list[1]))
+                universal_restriction.arrow_name = first_res
+                universal_restriction.second_el.append(Node(name=second_res))
+                return universal_restriction
+            universal_restriction.second_el.append(ParseOntology.parse_nested_op(some_element[1:-1]))
+
+            return universal_restriction
+        elif second_op == 'allValuesFrom':
+            existention_restriction = ExistentionRestriction()
+            existention_restriction.first_el.append(Node(name='', flag_negation=True))
+            existention_restriction.arrow_name = first_res
+            if len(some_element) == 1 and some_element[0][-2] == '/':
+                second_res = ParseOntology._get_name_element_from_url(
+                    ParseOntology._get_attribute_info('resource', op_list[1]))
+                existention_restriction.second_el.append(Node(name=second_res, flag_negation=True))
+                return existention_restriction
+            elm = ParseOntology.parse_nested_op(some_element[1:-1])
+            if len(elm) == 1:
+                existention_restriction.second_el.append(elm[0])
+            else:
+                existention_restriction.second_el += elm
+
+            return existention_restriction
+        return None
 
     @staticmethod
     def _parse_complement_of(op_list):
@@ -143,6 +170,22 @@ class ParseOntology(object):
                 open_flag_cnt += 1
                 continue
 
+            if re.search(r'<[A-Za-z0-9-_]+:someValuesFrom.*>', op):
+                if op[-2] == '/':
+                    if not flag_read:
+                        op_list.append(op)
+                        result.append(ParseOntology._parse_complement_of(op_list))
+                        flag_reset = True
+                        continue
+                    else:
+                        op_list.append(op)
+                        continue
+                if not flag_read:
+                    flag_read = True
+                op_list.append(op)
+                open_flag_cnt += 1
+                continue
+
             if flag_read:
                 op_list.append(op)
                 if re.search(r'</[A-Za-z0-9-_]+:intersectionOf', op):
@@ -170,7 +213,6 @@ class ParseOntology(object):
                     open_flag_cnt -= 1
                     if open_flag_cnt == 0:
                         op = ParseOntology._parse_complement_of(op_list[1:-1])
-                        # print(op)
                         flag_reset = True
                         result.append(op)
                         continue
@@ -188,6 +230,14 @@ class ParseOntology(object):
         union = Union()
         union.elements = ParseOntology.parse_nested_op(op_list)
         return union
+
+    @staticmethod
+    def _handle_sub_class_of(sub_class_of: list):
+        if len(sub_class_of) < 2:
+            return None
+        sub = SubclassOf()
+        sub.elements = ParseOntology.parse_nested_op(sub_class_of[1:-1])
+        return sub
 
     @staticmethod
     def _handle_equivalent(equivalent_class: list):
@@ -216,6 +266,7 @@ class ParseOntology(object):
             return None
         op = OperationClass(name=class_name)
 
+
         if len(operation_list) != 1:
             equivalent_class = []
             flag_reset = False
@@ -234,6 +285,16 @@ class ParseOntology(object):
                         op.equivalent_class.append(eq)
                         flag_reset = True
                         continue
+                if re.search(r'<[A-Za-z0-9-_]+:subClassOf.*>', operation):
+                    flag_add_element = True
+                    if len(operation) > 2 and operation[-2] == '/':
+                        sub_class = ParseOntology._get_name_element_from_url(
+                            ParseOntology._get_attribute_info('resource', operation))
+                        sub_el = SubclassOf()
+                        sub_el.elements.append(Node(name=sub_class))
+                        op.sub_class_of.append(sub_el)
+                        flag_reset = True
+                        continue
 
                 if flag_add_element:
                     equivalent_class.append(operation)
@@ -242,12 +303,15 @@ class ParseOntology(object):
                     eq = ParseOntology._handle_equivalent(equivalent_class)
                     op.equivalent_class.append(eq)
                     flag_reset = True
+                    break
                     continue
 
-                if re.search(r'<[A-Za-z0-9-_]+:subClassOf.*>', operation):
-                    sub_class = ParseOntology._get_name_element_from_url(
-                        ParseOntology._get_attribute_info('resource', operation))
-                    op.sub_class_of.append(sub_class)
+                if re.search(r'</[A-Za-z0-9-_]+:subClassOf.*>', operation):
+                    sub_el = ParseOntology._handle_sub_class_of(equivalent_class)
+                    op.sub_class_of.append(sub_el)
+                    flag_reset = True
+                    continue
+
         if not self.check_exist_class(op):
             self.class_onto.append(op)
 
@@ -293,6 +357,7 @@ class ParseOntology(object):
                         if open_flag_cnt == 0:
                             flag_reset = True
                             self._handle_operation(operation_list)
+                            # break
                             continue
                     continue
 

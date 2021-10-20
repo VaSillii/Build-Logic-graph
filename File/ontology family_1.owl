@@ -37,7 +37,30 @@
     //
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/pizza/pizza.owl#SpicyPizzaEquivalent">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.co-ode.org/ontologies/pizza/pizza.owl#Pizza"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/pizza/pizza.owl#hasTopping"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="http://www.co-ode.org/ontologies/pizza/pizza.owl#PizzaTopping"/>
 
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="en">An alternative definition for the SpicyPizza which does away with needing a definition of SpicyTopping and uses a slightly more complicated restriction: Pizzas that have at least one topping that is both a PizzaTopping and has spiciness hot are members of this class.</rdfs:comment>
+        <rdfs:label xml:lang="pt">PizzaTemperadaEquivalente</rdfs:label>
+        <rdfs:label xml:lang="en">SpicyPizzaEquivalent</rdfs:label>
+        <skos:prefLabel xml:lang="en">Spicy Pizza Equivalent</skos:prefLabel>
+    </owl:Class>
     
 
 
