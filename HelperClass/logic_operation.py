@@ -1,3 +1,8 @@
+class NumberElementStatic:
+    cluster_cnt = 1
+    node_cnt = 1
+
+
 class EquivalentClass:
     def __init__(self, name=''):
         self.name = name
@@ -8,21 +13,21 @@ class EquivalentClass:
 
 
 class NestedElement:
-    cluster_cnt = 1
-
     def __init__(self):
         self.elements = []
         self.flag_nested = False
-        self.node = 'cluster_' + str(NestedElement.cluster_cnt)
-        NestedElement.cluster_cnt += 1
+        self.node = 'cluster_' + str(NumberElementStatic.cluster_cnt)
+        NumberElementStatic.cluster_cnt += 1
 
 
 class ArrowClass:
-    def __init__(self, first_el, second_el, arrow_name: str):
-        self.first_el = first_el
-        self.second_el = second_el
-        self.arrow_name = arrow_name
+    def __init__(self):
+        self.first_el = []
+        self.second_el = []
+        self.arrow_name = ''
         self.flag_nested = True
+        self.node = 'cluster_' + str(NumberElementStatic.cluster_cnt)
+        NumberElementStatic.cluster_cnt += 1
 
 
 class Node:
@@ -30,13 +35,13 @@ class Node:
 
     def __init__(self, name, flag_negation=False):
         self.name = name
-        self.node = 'node_' + str(Node._node_cnt)
-        Node._node_cnt += 1
+        self.node = 'node_' + str(NumberElementStatic.node_cnt)
+        NumberElementStatic.node_cnt += 1
         self.flag_nested = False
         self.flag_negation = flag_negation
 
     def __str__(self):
-        return 'Node ' +self.name
+        return 'Node ' + self.name
 
 
 class Negation(NestedElement):
@@ -56,17 +61,20 @@ class Union(NestedElement):
 
 class UniversalRestriction(ArrowClass):
     def __str__(self):
-        return 'UniversalRestriction ' + self.first_el + self.second_el + self.arrow_name
+        return 'UniversalRestriction ' + str(self.first_el) + str(self.second_el) + self.arrow_name
 
 
 class ExistentionRestriction(ArrowClass):
     def __str__(self):
-        return 'ExistentionRestriction ' + self.first_el + self.second_el + self.arrow_name
+        return 'ExistentionRestriction ' + str(self.first_el) + str(self.second_el) + self.arrow_name
 
 
-class SubclassOf(ArrowClass):
+class SubclassOf(NestedElement):
+    def __init__(self):
+        super().__init__()
+
     def __str__(self):
-        return self.first_el + self.second_el
+        return 'SubclassOf' +str(self.elements)
 
 
 class ElementOnto:

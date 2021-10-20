@@ -1,4 +1,7 @@
+import os
 import re
+import shutil
+import time
 from pathlib import Path
 from graphviz import Source
 
@@ -8,10 +11,24 @@ from HelperClass.logic_operation import Intersection, Node, Negation, UniversalR
 
 
 class BuildGraph:
-    def __init__(self, data):
+    def __init__(self, data, name_onto):
         self.data = data
+        self.name_onto = name_onto
         self.graph = ''
         self.path = Path(__file__).absolute().parent.parent.joinpath(r'File\dot_files\graph_onto_1.dot')
+        self.path_folder_graph = Path(__file__).absolute().parent.parent.joinpath(f'File\onto_graph\{self.name_onto}')
+        BuildGraph.delete_folder(self.path_folder_graph)
+        BuildGraph.create_folder(self.path_folder_graph)
+
+    @staticmethod
+    def delete_folder(path):
+        if os.path.exists(path):
+            shutil.rmtree(path)
+
+    @staticmethod
+    def create_folder(path):
+        if not os.path.exists(path):
+            os.mkdir(path)
 
     @staticmethod
     def _wrap_graph_in_diagram(initial_graph, graph):
@@ -30,13 +47,14 @@ class BuildGraph:
                 '\n}'
         return graph
 
-    def _save_to_dot_file(self):
+    @staticmethod
+    def _save_to_dot_file(path, graph):
         """
         Save to .dot file
         :return:
         """
-        with open(self.path, 'w', encoding='utf-8') as f:
-            f.write(self.graph)
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(graph)
 
     @staticmethod
     def get_nested_graph(graph, subgraph_name, label='', border_color='black', background='White'):
@@ -85,23 +103,50 @@ class BuildGraph:
         return negation_initial_graph, negation_graph
 
     @staticmethod
+    def get_graph_arrow_element(element, flag_change_color=False, flag_negation=False):
+        arrow_graph = ''
+        arrow_initial_graph = ''
+
+        inner_elm, graph = BuildGraph.get_graph_element(element.first_el[0], flag_negation)
+        arrow_initial_graph += inner_elm
+        arrow_graph += graph
+
+        if len(element.second_el) == 1 and element.second_el is not list:
+            if type(element.second_el[0]) is Union and not flag_change_color:
+                inter = Intersection()
+                inter.elements = element.second_el[0].elements
+                element.second_el[0] = inter
+
+            inner_elm, graph = BuildGraph.get_graph_element(element.second_el[0], flag_negation)
+            arrow_initial_graph += graph
+            arrow_graph += inner_elm
+            return arrow_initial_graph, arrow_graph, element.second_el[0].node
+
+        elm = None
+        if flag_change_color:
+            elm = Intersection().elements = element.second_el
+        else:
+            elm = Union().elements = element.second_el
+        inner_elm, graph = BuildGraph.get_graph_element(elm, flag_negation)
+        arrow_initial_graph += inner_elm
+        arrow_graph += graph
+
+        return arrow_initial_graph, arrow_graph, elm.node
+
+    @staticmethod
     def get_arrow_graph(element, flag_change_color=False, flag_negation=False):
         arrow_graph = ''
         arrow_initial_graph = ''
-        if element.flag_nested:
-            if flag_change_color:
-                first_node = Node(name=element.first_el, flag_negation=flag_negation)
-                second_node = Node(name=element.second_el)
-            else:
-                first_node = Node(name=element.first_el, flag_negation=not flag_negation)
-                second_node = Node(name=element.second_el, flag_negation=True)
-            inner_elm, graph = BuildGraph.get_graph_element(first_node)
-            arrow_initial_graph += inner_elm
-            arrow_graph += graph
-            inner_elm, graph = BuildGraph.get_graph_element(second_node)
-            arrow_initial_graph += inner_elm + graph + '\n'
-            arrow_initial_graph += '\t' + first_node.node + '->' + second_node.node + \
-                                   f' [ltail={first_node.node} lhead={second_node.node} label="{element.arrow_name}"]\n'
+
+        inner_elm, graph, node_cluster = BuildGraph.get_graph_arrow_element(element, flag_change_color, flag_negation)
+        arrow_initial_graph += inner_elm
+        arrow_graph += graph
+
+        node_first = BuildGraph.get_name_nested_node(inner_elm)
+        nested_node_second = BuildGraph.get_name_nested_node(graph)
+
+        arrow_initial_graph += '\t' + nested_node_second + '->' + node_first + \
+                               f' [ltail={node_first} lhead={node_cluster} label="{element.arrow_name}"]\n'
         return arrow_initial_graph, arrow_graph
 
     @staticmethod
@@ -172,17 +217,37 @@ class BuildGraph:
         return None
 
     @staticmethod
+    def get_sub_class_of_nested_graph(sub_class_of):
+        sub_graph = ''
+        initial_graph = ''
+        for element in sub_class_of.elements:
+            if element is not None:
+                inner_elm, graph = BuildGraph.get_graph_element(element)
+                sub_graph += graph
+                initial_graph += inner_elm
+        return initial_graph, sub_graph
+
+    @staticmethod
     def get_graph_subclass_of(class_graph, class_name, sub_class_of_list):
         class_initial_graph = ''
+        class_sub_graph = ''
 
         nested_node = BuildGraph.get_name_nested_node(class_graph)
         for node_sub_class_of in sub_class_of_list:
-            node_sub_class_of = Node(name=node_sub_class_of)
-            graph_node_sub_class_of = BuildGraph.get_node_graph(node_sub_class_of)
-            class_initial_graph += '\n\t' + graph_node_sub_class_of
-            class_initial_graph += '\n\t' + nested_node + '->' + node_sub_class_of.node + f' [ltail={class_name} lhead={nested_node} label="SubClassOf"]'
+            try:
+                if node_sub_class_of is not None:
+                    inner_elm, graph = BuildGraph.get_sub_class_of_nested_graph(node_sub_class_of)
+                    nested_node_gr = BuildGraph.get_name_nested_node(graph)
+                    class_initial_graph += inner_elm
+                    class_sub_graph += graph
+                    if len(node_sub_class_of.elements) == 1 and type(node_sub_class_of.elements[0]) is Node:
+                        class_initial_graph += '\n\t' + nested_node + '->' + nested_node_gr + f' [ltail={class_name} lhead={nested_node} label="SubClassOf"]'
+                    else:
+                        class_initial_graph += '\n\t' + nested_node + '->' + nested_node_gr + f' [ltail={class_name} lhead={nested_node} label="SubClassOf"]'
+            except:
+                continue
 
-        return class_initial_graph
+        return class_initial_graph, class_sub_graph
 
     @staticmethod
     def get_graph_equivalent_class(equivalent_class_list):
@@ -205,7 +270,6 @@ class BuildGraph:
 
         class_graph = ''
         class_initial_graph = ''
-        # print(class_onto.name)
         if len(class_onto.equivalent_class) == 0:
             graph = BuildGraph.get_node_graph(Node(name=''), border_color='white')
             class_graph += graph
@@ -220,7 +284,9 @@ class BuildGraph:
                                                                                     line_equivalent_class))
 
         if class_onto.sub_class_of:
-            class_initial_graph += BuildGraph.get_graph_subclass_of(class_graph, class_name, class_onto.sub_class_of)
+            inner_elm, graph = BuildGraph.get_graph_subclass_of(class_graph, class_name, class_onto.sub_class_of)
+            class_initial_graph += inner_elm
+            class_graph += graph
 
         return class_initial_graph, class_graph
 
@@ -234,12 +300,15 @@ class BuildGraph:
 
         for class_onto in self.data:
             inner_elm, graph = BuildGraph._handle_onto_class(class_onto)
-            graph_main += graph
-            graph_main_initial += inner_elm
-        self.graph = BuildGraph._wrap_graph_in_diagram(graph_main_initial, graph_main)
-        self._save_to_dot_file()
-        s = Source.from_file(self.path)
-        s.view()
+            graph_main = graph
+            graph_main_initial = inner_elm
+            graph_main = BuildGraph._wrap_graph_in_diagram(graph_main_initial, graph_main)
+            path_folder_onto = self.path_folder_graph.joinpath(f'{class_onto.name}\{class_onto.name}.dot')
+            BuildGraph.create_folder(self.path_folder_graph.joinpath(f'{class_onto.name}'))
+
+            self._save_to_dot_file(path_folder_onto, graph_main)
+            s = Source.from_file(path_folder_onto)
+            s.view()
 
 
 if __name__ == '__main__':
