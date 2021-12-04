@@ -114,8 +114,12 @@ class BuildGraph:
         if len(element.second_el) == 1 and element.second_el is not list:
             if type(element.second_el[0]) is Union and not flag_change_color:
                 inter = Intersection()
-                inter.elements = element.second_el[0].elements
+                neg = Negation()
+                neg.elements = element.second_el[0].elements
+                # print(neg.elements)
+                inter.elements = [neg]
                 element.second_el[0] = inter
+                # flag_negation = not flag_negation
 
             inner_elm, graph = BuildGraph.get_graph_element(element.second_el[0], flag_negation)
             arrow_initial_graph += graph
@@ -159,6 +163,7 @@ class BuildGraph:
             if flag:
                 inner_elm, graph = BuildGraph.get_graph_element(element, flag_negation=not flag)
             else:
+                # print(elements)
                 inner_elm, graph = BuildGraph.get_graph_element(element, flag_negation=flag_negation)
 
             intersection_graph += graph
@@ -173,6 +178,7 @@ class BuildGraph:
     @staticmethod
     def get_graph_element(element, flag_negation=False):
         type_element = type(element)
+        print(element, type_element)
         if type_element is Node:
             if element.flag_negation:
                 return '', BuildGraph.get_node_graph(element, background='lightgrey', flag_negation=flag_negation)

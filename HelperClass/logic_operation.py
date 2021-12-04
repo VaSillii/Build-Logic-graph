@@ -31,8 +31,6 @@ class ArrowClass:
 
 
 class Node:
-    _node_cnt = 1
-
     def __init__(self, name, flag_negation=False):
         self.name = name
         self.node = 'node_' + str(NumberElementStatic.node_cnt)
